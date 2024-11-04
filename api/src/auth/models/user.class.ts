@@ -1,16 +1,20 @@
-import { IsEmail, IsString } from 'class-validator';
-import { FeedPost } from '../../feed/models/post.interface';
-import { Role } from './role.enum';
+import {IsEmail, IsOptional, IsString} from 'class-validator';
+
 
 export class User {
-  id?: number;
-  firstName?: string;
-  lastName?: string;
-  @IsEmail()
-  email?: string;
+  @IsOptional() // Mark id as optional to avoid errors
+  id: string;
+
   @IsString()
-  password?: string;
-  imagePath?: string;
-  role?: Role;
-  posts?: FeedPost[];
+  firstName: string;
+
+  @IsString()
+  lastName: string;
+
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  password: string;
 }
+

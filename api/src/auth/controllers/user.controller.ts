@@ -1,33 +1,25 @@
 import {
+  Body,
   Controller,
+  Get,
+  Param,
   Post,
+  Put,
+  Request,
+  Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
-  Request,
-  Get,
-  Res,
-  Param,
-  Put,
-  Body,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { join } from 'path';
-import { Observable, of } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
-import { UpdateResult } from 'typeorm';
-import { JwtGuard } from '../guards/jwt.guard';
-import {
-  isFileExtensionSafe,
-  saveImageToStorage,
-  removeFile,
-} from '../helpers/image-storage';
-import {
-  FriendRequest,
-  FriendRequestStatus,
-} from '../models/friend-request.interface';
-import { User } from '../models/user.class';
-import { UserService } from '../services/user.service';
+import {FileInterceptor} from '@nestjs/platform-express';
+import {join} from 'path';
+import {Observable, of} from 'rxjs';
+import {map, switchMap} from 'rxjs/operators';
+import {JwtGuard} from '../guards/jwt.guard';
+import {isFileExtensionSafe, removeFile, saveImageToStorage,} from '../helpers/image-storage';
+import {FriendRequest, FriendRequestStatus,} from '../models/friend-request.interface';
+import {User} from '../models/user.class';
+import {UserService} from '../services/user.service';
 
 @Controller('user')
 export class UserController {
@@ -88,8 +80,7 @@ export class UserController {
   @UseGuards(JwtGuard)
   @Get(':userId')
   findUserById(@Param('userId') userStringId: string): Observable<User> {
-    const userId = parseInt(userStringId);
-    return this.userService.findUserById(userId);
+    return this.userService.findUserById(userStringId);
   }
 
   @UseGuards(JwtGuard)
@@ -98,8 +89,7 @@ export class UserController {
     @Param('receiverId') receiverStringId: string,
     @Request() req,
   ): Observable<FriendRequest | { error: string }> {
-    const receiverId = parseInt(receiverStringId);
-    return this.userService.sendFriendRequest(receiverId, req.user);
+    return this.userService.sendFriendRequest(receiverStringId, req.user);
   }
 
   @UseGuards(JwtGuard)
@@ -108,8 +98,7 @@ export class UserController {
     @Param('receiverId') receiverStringId: string,
     @Request() req,
   ): Observable<FriendRequestStatus> {
-    const receiverId = parseInt(receiverStringId);
-    return this.userService.getFriendRequestStatus(receiverId, req.user);
+    return this.userService.getFriendRequestStatus(receiverStringId, req.user);
   }
 
   @UseGuards(JwtGuard)

@@ -5,9 +5,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { FeedModule } from './feed/feed.module';
 import { AuthModule } from './auth/auth.module';
-import { APP_FILTER } from '@nestjs/core';
+import {APP_FILTER, APP_PIPE} from '@nestjs/core';
 import { AllExceptionsFilter } from './core/all-exceptions.filter';
 import { ChatModule } from './chat/chat.module';
+import { ValidationPipe } from '@nestjs/common';
 
 @Module({
   imports: [
@@ -32,6 +33,10 @@ import { ChatModule } from './chat/chat.module';
     {
       provide: APP_FILTER,
       useClass: AllExceptionsFilter,
+    },
+    {
+      provide: APP_PIPE,
+      useClass: ValidationPipe,
     },
   ],
 })

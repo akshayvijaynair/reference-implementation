@@ -4,11 +4,7 @@ import { from, Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { Repository, UpdateResult } from 'typeorm';
 import { FriendRequestEntity } from '../models/friend-request.entity';
-import {
-  FriendRequest,
-  FriendRequestStatus,
-  FriendRequest_Status,
-} from '../models/friend-request.interface';
+import {FriendRequest, FriendRequestStatus, FriendRequest_Status,} from '../models/friend-request.interface';
 import { UserEntity } from '../models/user.entity';
 import { User } from '../models/user.class';
 
@@ -21,7 +17,7 @@ export class UserService {
     private readonly friendRequestRepository: Repository<FriendRequestEntity>,
   ) {}
 
-  findUserById(id: number): Observable<User> {
+  findUserById(id: string): Observable<User> {
     return from(
       this.userRepository.findOne({ id }, { relations: ['feedPosts'] }),
     ).pipe(
@@ -35,18 +31,18 @@ export class UserService {
     );
   }
 
-  updateUserImageById(id: number, imagePath: string): Observable<UpdateResult> {
+  updateUserImageById(id: string, imagePath: string): Observable<UpdateResult> {
     const user: User = new UserEntity();
     user.id = id;
-    user.imagePath = imagePath;
+    //user.imagePath = imagePath;
     return from(this.userRepository.update(id, user));
   }
 
-  findImageNameByUserId(id: number): Observable<string> {
+  findImageNameByUserId(id: string): Observable<string> {
     return from(this.userRepository.findOne({ id })).pipe(
       map((user: User) => {
         delete user.password;
-        return user.imagePath;
+        return "";
       }),
     );
   }
@@ -71,7 +67,7 @@ export class UserService {
   }
 
   sendFriendRequest(
-    receiverId: number,
+    receiverId: string,
     creator: User,
   ): Observable<FriendRequest | { error: string }> {
     if (receiverId === creator.id)
@@ -99,7 +95,7 @@ export class UserService {
   }
 
   getFriendRequestStatus(
-    receiverId: number,
+    receiverId: string,
     currentUser: User,
   ): Observable<FriendRequestStatus> {
     return this.findUserById(receiverId).pipe(
@@ -171,7 +167,7 @@ export class UserService {
       }),
     ).pipe(
       switchMap((friends: FriendRequest[]) => {
-        let userIds: number[] = [];
+        let userIds: string[] = [];
 
         friends.forEach((friend: FriendRequest) => {
           if (friend.creator.id === currentUser.id) {

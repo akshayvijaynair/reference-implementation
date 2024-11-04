@@ -6,16 +6,16 @@ import { UserEntity } from './user.entity';
 @Entity('request')
 export class FriendRequestEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: string;
 
-  @ManyToOne(() => UserEntity, (userEntity) => userEntity.sentFriendRequests)
+ /* @ManyToOne(() => UserEntity, (userEntity) => userEntity.sentFriendRequests)
   creator: UserEntity;
 
   @ManyToOne(
     () => UserEntity,
     (userEntity) => userEntity.receivedFriendRequests,
   )
-  receiver: UserEntity;
+  receiver: UserEntity;*/
 
   @Column()
   status: FriendRequest_Status;

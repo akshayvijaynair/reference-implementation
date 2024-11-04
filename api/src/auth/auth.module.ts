@@ -11,6 +11,7 @@ import { RolesGuard } from './guards/roles.guard';
 import { UserService } from './services/user.service';
 import { UserController } from './controllers/user.controller';
 import { FriendRequestEntity } from './models/friend-request.entity';
+import {AccountEntity} from "./models/accounts.entity";
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { FriendRequestEntity } from './models/friend-request.entity';
         signOptions: { expiresIn: '3600s' },
       }),
     }),
-    TypeOrmModule.forFeature([UserEntity, FriendRequestEntity]),
+    TypeOrmModule.forFeature([UserEntity, FriendRequestEntity, AccountEntity]),
   ],
   providers: [AuthService, JwtGuard, JwtStrategy, RolesGuard, UserService],
   controllers: [AuthController, UserController],
