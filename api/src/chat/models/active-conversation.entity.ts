@@ -9,7 +9,7 @@ export class ActiveConversationEntity {
   socketId: string;
 
   @Column()
-  userId: number;
+  userId: string;
 
   @Column()
   conversationId: number;

@@ -53,7 +53,7 @@ export class ChatGateway
     });
   }
 
-  getConversations(socket: Socket, userId: number): Subscription {
+  getConversations(socket: Socket, userId: string): Subscription {
     return this.conversationService
       .getConversationsWithUsers(userId)
       .subscribe((conversations) => {
@@ -110,7 +110,7 @@ export class ChatGateway
   }
 
   @SubscribeMessage('joinConversation')
-  joinConversation(socket: Socket, friendId: number) {
+  joinConversation(socket: Socket, friendId: string) {
     this.conversationService
       .joinConversation(friendId, socket.data.user.id, socket.id)
       .pipe(

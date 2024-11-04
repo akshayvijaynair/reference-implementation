@@ -22,8 +22,8 @@ export class ConversationService {
   ) {}
 
   getConversation(
-    creatorId: number,
-    friendId: number,
+    creatorId: string,
+    friendId: string,
   ): Observable<Conversation | undefined> {
     return from(
       this.conversationRepository
@@ -52,7 +52,7 @@ export class ConversationService {
     );
   }
 
-  getConversationsForUser(userId: number): Observable<Conversation[]> {
+  getConversationsForUser(userId: string): Observable<Conversation[]> {
     return from(
       this.conversationRepository
         .createQueryBuilder('conversation')
@@ -73,7 +73,7 @@ export class ConversationService {
     );
   }
 
-  getConversationsWithUsers(userId: number): Observable<Conversation[]> {
+  getConversationsWithUsers(userId: string): Observable<Conversation[]> {
     return this.getConversationsForUser(userId).pipe(
       take(1),
       switchMap((conversations: Conversation[]) => conversations),
@@ -84,8 +84,8 @@ export class ConversationService {
   }
 
   joinConversation(
-    friendId: number,
-    userId: number,
+    friendId: string,
+    userId: string,
     socketId: string,
   ): Observable<ActiveConversation> {
     return this.getConversation(userId, friendId).pipe(

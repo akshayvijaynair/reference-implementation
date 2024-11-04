@@ -22,7 +22,7 @@ export class IsCreatorGuard implements CanActivate {
 
     if (!user || !params) return false;
 
-    if (user.role === 'admin') return true; // allow admins to get make requests
+    // if (user.role === 'admin') return true; // allow admins to get make requests
 
     const userId = user.id;
     const feedId = params.id;

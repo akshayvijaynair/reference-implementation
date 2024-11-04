@@ -16,8 +16,8 @@ export class MessageEntity {
   @Column()
   message: string;
 
-  @ManyToOne(() => UserEntity, (userEntity) => userEntity.messages)
-  user: UserEntity;
+ /* @ManyToOne(() => UserEntity, (userEntity) => userEntity.messages)
+  user: UserEntity;*/
 
   @ManyToOne(
     () => ConversationEntity,
