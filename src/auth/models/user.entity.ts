@@ -1,10 +1,6 @@
 import {Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn} from "typeorm";
-import {FeedPostEntity} from "../../feed/models/post.entity";
-import {FriendRequestEntity} from "./friend-request.entity";
-import {ConversationEntity} from "../../chat/models/conversation.entity";
-import {MessageEntity} from "../../chat/models/message.entity";
 
-@Entity('account')
+@Entity('user')
 export class UserEntity {
   @PrimaryGeneratedColumn()
   id: string; // Updated to string to support URI format
