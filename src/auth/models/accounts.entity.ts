@@ -1,5 +1,14 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
+// Define supported Actor types
+export enum ActorType {
+    Application = 'Application',
+    Group = 'Group',
+    Organization = 'Organization',
+    Person = 'Person',
+    Service = 'Service',
+}
+
 @Entity('accounts')
 export class AccountEntity {
     @PrimaryGeneratedColumn()
