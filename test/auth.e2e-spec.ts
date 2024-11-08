@@ -3,7 +3,7 @@ import { HttpStatus } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
 import * as request from 'supertest';
 
-import { User } from '../src/auth/models/user.class';
+import { User } from '../src/auth/models/user.dto';
 
 describe('AuthController (e2e)', () => {
   const authUrl = `http://localhost:3000/api/auth`;

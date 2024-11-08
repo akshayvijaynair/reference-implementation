@@ -1,4 +1,4 @@
-import {IsEnum, IsOptional, IsString, IsUrl} from "class-validator";
+import {IsEnum, IsJSON, IsOptional, IsString, IsUrl} from "class-validator";
 import {ActorType} from "./accounts.entity";
 
 export class Actor {
@@ -16,17 +16,14 @@ export class Actor {
     @IsUrl()
     outbox: string;
 
-    @IsOptional()
     @IsUrl()
-    following?: string;
+    following: string;
 
-    @IsOptional()
     @IsUrl()
-    followers?: string;
+    followers: string;
 
-    @IsOptional()
     @IsString()
-    preferredUsername?: string;
+    name: string;
 
     @IsOptional()
     @IsUrl()
@@ -36,6 +33,7 @@ export class Actor {
     @IsString()
     summary?: string;
 
+    @IsJSON()
     publicKey: {
         id: string;
         owner: string;
@@ -55,19 +53,15 @@ export class Actor {
         sharedInbox?: string;
     };
 
+    @IsJSON()
     webfinger: {
         subject: string;
         links: { rel: string; type: string; href: string }[];
     };
 
-
     @IsOptional()
     @IsUrl()
     streams?: string;
-
-    @IsOptional()
-    @IsString()
-    name?: string;
 
     @IsOptional()
     @IsUrl()

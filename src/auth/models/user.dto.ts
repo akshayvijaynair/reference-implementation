@@ -16,5 +16,7 @@ export class User {
 
   @IsString()
   password: string;
-}
 
+  @IsString()
+  userName: string;
+}

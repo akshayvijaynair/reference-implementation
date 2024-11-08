@@ -1,4 +1,4 @@
-import { User } from 'src/auth/models/user.class';
+import { User } from 'src/auth/models/user.dto';
 import { Conversation } from './conversation.interface';
 
 export interface Message {

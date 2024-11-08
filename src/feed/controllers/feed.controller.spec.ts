@@ -8,7 +8,7 @@ import { FeedService } from '../services/feed.service';
 import { UserService } from '../../auth/services/user.service';
 import { JwtGuard } from '../../auth/guards/jwt.guard';
 import { IsCreatorGuard } from '../guards/is-creator.guard';
-import { User } from '../../auth/models/user.class';
+import { User } from '../../auth/models/user.dto';
 import { FeedPost } from '../models/post.interface';
 
 describe('FeedController', () => {

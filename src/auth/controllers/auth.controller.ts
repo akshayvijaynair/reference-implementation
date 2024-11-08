@@ -1,10 +1,12 @@
 import {Controller, Post, Body, HttpException, HttpStatus, HttpCode} from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
-import { User } from '../models/user.class';
-import { Actor } from '../models/actor.class';
+import { User } from '../models/user.dto';
+import { Actor } from '../models/account.response.dto';
 import * as crypto from 'crypto';
 import {Observable} from "rxjs";
 import {map} from "rxjs/operators";
+import {ActorType} from "../models/accounts.entity";
+import {LoginDto} from "../models/login.dto";
 
 @Controller('auth')
 export class AuthController {
@@ -19,15 +21,13 @@ export class AuthController {
     const { publicKey, privateKey } = await this.generateKeyPair();
 
     // Create Actor and Webfinger data
-    const actorRecord = this.createActor(userDto.email, process.env.DOMAIN, publicKey);
-    const webfingerRecord = this.createWebfinger(userDto.email, process.env.DOMAIN);
+    const actorRecord = this.createActor(userDto.userName, process.env.DOMAIN, publicKey);
 
     // Save the Actor record and keys to the 'accounts' table
-    await this.authService.createAccount({
-      ...actorRecord,
-      webfinger: webfingerRecord,
-      privateKey
-    });
+    await this.authService.createAccount(
+        this.createActor(userDto.userName, process.env.DOMAIN, publicKey),
+        privateKey
+    );
 
     return actorRecord;
   }
@@ -52,20 +52,21 @@ export class AuthController {
     });
   }
 
+  // Helper Methods for Actor and Webfinger Creation
   private createActor(name: string, domain: string, pubkey: string): Actor {
     return {
       '@context': [
         'https://www.w3.org/ns/activitystreams',
-        'https://w3id.org/security/v1'
+        'https://w3id.org/security/v1',
       ],
-      id: `https://${domain}/u/${name}`,
-      type: 'Person',
-      preferredUsername: name,
-      inbox: `https://${domain}/api/inbox`,
+      id: `https://${domain}/u/${name}`, // Corrected to use backticks
+      type: 'Person' as ActorType,
+      name: name,
+      inbox: `https://${domain}/u/${name}/inbox`,
       outbox: `https://${domain}/u/${name}/outbox`,
       followers: `https://${domain}/u/${name}/followers`,
       following: `https://${domain}/u/${name}/following`,
-      liked: `https://${domain}/u/${name}/liked`, // URL for liked collection
+      liked: `https://${domain}/u/${name}/liked`,
       summary: '', // Placeholder or custom summary
       publicKey: {
         id: `https://${domain}/u/${name}#main-key`,
@@ -75,10 +76,10 @@ export class AuthController {
       icon: {
         type: 'Image',
         mediaType: 'image/png',
-        url: `https://${domain}/u/${name}/icon.png`, // Placeholder for the user’s icon URL
+        url: `https://${domain}/u/${name}/icon.png`, // Corrected to use backticks
       },
       endpoints: {
-        sharedInbox: `https://${domain}/api/sharedInbox`, // Shared inbox endpoint
+        sharedInbox: `https://${domain}/api/sharedInbox`, // Corrected to use backticks
       },
       webfinger: this.createWebfinger(name, domain),
     };
@@ -92,16 +93,16 @@ export class AuthController {
           rel: 'self',
           type: 'application/activity+json',
           href: `https://${domain}/u/${name}`,
-        }
-      ]
+        },
+      ],
     };
   }
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  login(@Body() user: User): Observable<{ token: string }> {
+  login(@Body() login: LoginDto): Observable<{ token: string }> {
     return this.authService
-        .login(user)
+        .login(login)
         .pipe(map((jwt: string) => ({ token: jwt })));
   }
 }

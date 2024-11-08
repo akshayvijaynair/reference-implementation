@@ -1,9 +1,12 @@
-import {Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
 
 @Entity('user')
 export class UserEntity {
   @PrimaryGeneratedColumn()
-  id: string; // Updated to string to support URI format
+  id: string;
+
+  @Column({ unique: true })
+  userName: string;
 
   @Column()
   firstName: string;
@@ -20,18 +23,4 @@ export class UserEntity {
   @Column({ nullable: true })
   imagePath: string;
 
-/*  @OneToMany(() => FeedPostEntity, (feedPostEntity) => feedPostEntity.author)
-  feedPosts: FeedPostEntity[];
-
-  @OneToMany(() => FriendRequestEntity, (friendRequestEntity) => friendRequestEntity.creator)
-  sentFriendRequests: FriendRequestEntity[];
-
-  @OneToMany(() => FriendRequestEntity, (friendRequestEntity) => friendRequestEntity.receiver)
-  receivedFriendRequests: FriendRequestEntity[];
-
-  @ManyToMany(() => ConversationEntity, (conversationEntity) => conversationEntity.users)
-  conversations: ConversationEntity[];
-
-  @OneToMany(() => MessageEntity, (messageEntity) => messageEntity.user)
-  messages: MessageEntity[];*/
 }

@@ -2,10 +2,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
 const httpMocks = require('node-mocks-http');
+import { User } from '../../auth/models/user.dto';
 
-import { User } from '../../auth/models/user.class';
-
-import { FeedService } from '../services/feed.service';
+import { FeedService } from './feed.service';
 import { FeedPost } from '../models/post.interface';
 import { FeedPostEntity } from '../models/post.entity';
 

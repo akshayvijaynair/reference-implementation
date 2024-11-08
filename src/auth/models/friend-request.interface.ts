@@ -1,4 +1,4 @@
-import { User } from './user.class';
+import { User } from './user.dto';
 
 export type FriendRequest_Status =
   | 'not-sent'
