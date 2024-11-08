@@ -6,7 +6,7 @@ import { Repository, UpdateResult } from 'typeorm';
 import { FriendRequestEntity } from '../models/friend-request.entity';
 import {FriendRequest, FriendRequestStatus, FriendRequest_Status,} from '../models/friend-request.interface';
 import { UserEntity } from '../models/user.entity';
-import { User } from '../models/user.class';
+import { User } from '../models/user.dto';
 
 @Injectable()
 export class UserService {

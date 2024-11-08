@@ -18,7 +18,7 @@ import {map, switchMap} from 'rxjs/operators';
 import {JwtGuard} from '../guards/jwt.guard';
 import {isFileExtensionSafe, removeFile, saveImageToStorage,} from '../helpers/image-storage';
 import {FriendRequest, FriendRequestStatus,} from '../models/friend-request.interface';
-import {User} from '../models/user.class';
+import {User} from '../models/user.dto';
 import {UserService} from '../services/user.service';
 
 @Controller('user')

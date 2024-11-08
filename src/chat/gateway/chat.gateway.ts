@@ -10,7 +10,7 @@ import { of, Subscription, take, tap } from 'rxjs';
 import { Server, Socket } from 'socket.io';
 
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
-import { User } from 'src/auth/models/user.class';
+import { User } from 'src/auth/models/user.dto';
 import { AuthService } from 'src/auth/services/auth.service';
 import { ActiveConversation } from '../models/active-conversation.interface';
 import { Message } from '../models/message.interface';

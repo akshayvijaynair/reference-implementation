@@ -3,12 +3,13 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { from, Observable, of } from 'rxjs';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
-import {FindOneOptions, Repository} from 'typeorm';
+import { catchError, map, switchMap } from 'rxjs/operators';
+import {DeepPartial, FindOneOptions, Repository} from 'typeorm';
 import { UserEntity } from '../models/user.entity';
-import { User } from '../models/user.class'; //userDTO
-import { Actor } from '../models/actor.class'; //actorDTO
+import { User } from '../models/user.dto'; //userDTO
+import { Actor } from '../models/account.response.dto'; //actorDTO
 import {AccountEntity} from "../models/accounts.entity";
+import {LoginDto} from "../models/login.dto";
 
 @Injectable()
 export class AuthService {
@@ -18,40 +19,49 @@ export class AuthService {
         @InjectRepository(AccountEntity)
         private readonly accountRepository: Repository<AccountEntity>,
         private jwtService: JwtService,
-    ) {
-    }
+    ) {}
 
     async createUser(userDto: User): Promise<UserEntity> {
-        const existingUser = await this.userRepository.findOne({ email: userDto.email });
-        if (existingUser) {
-            throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
+        try {
+            const checkUserName = await this.userRepository.findOne({ userName: userDto.userName });
+
+            if (checkUserName) {
+                throw new HttpException('Account already exists', HttpStatus.BAD_REQUEST);
+            }
+
+            const hashedPassword = await bcrypt.hash(userDto.password, 12);
+            const user = this.userRepository.create({
+                ...userDto,
+                password: hashedPassword,
+            });
+
+            return await this.userRepository.save(user);
+        } catch (error) {
+            throw new HttpException('Failed to create user', HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        const hashedPassword = await bcrypt.hash(userDto.password, 12);
-        const user = this.userRepository.create({
-            ...userDto,
-            password: hashedPassword,
-        });
-
-        return this.userRepository.save(user);
     }
 
-    async createAccount(actorDto: Actor & { privateKey: string }) {
-        const account = this.accountRepository.create({
-            name: actorDto.preferredUsername,
-            actor: JSON.stringify(actorDto), // Storing actor as JSON string
-            pubkey: actorDto.publicKey.publicKeyPem,
-            privkey: actorDto.privateKey,
-            webfinger: JSON.stringify(actorDto.webfinger),
-            summary: actorDto.summary,
-            icon: JSON.stringify(actorDto.icon), // Store icon as JSON if including media metadata
-            followers: actorDto.followers,
-            following: actorDto.following,
-            liked: actorDto.liked,
-            endpoints: JSON.stringify(actorDto.endpoints),
-        });
+    async createAccount(actorDto: Actor , privateKey: string) {
 
-        return this.accountRepository.save(account);
+        try {
+            const account = this.accountRepository.create({
+                name: actorDto.name,
+                type: actorDto.type,
+                pubkey: actorDto.publicKey,
+                privkey: privateKey,
+                webfinger: actorDto.webfinger,
+                summary: actorDto.summary,
+                icon: actorDto.icon,
+                followers: actorDto.followers,
+                following: actorDto.following,
+                liked: actorDto.liked,
+                endpoints: actorDto.endpoints,
+            }as DeepPartial<AccountEntity>);
+
+            return await this.accountRepository.save(account);
+        } catch (error) {
+            throw new HttpException('Failed to create account', error);
+        }
     }
 
     validateUser(email: string, password: string): Observable<User> {
@@ -79,8 +89,8 @@ export class AuthService {
         );
     }
 
-    login(user: User): Observable<string> {
-        const {email, password} = user;
+    login(login: LoginDto): Observable<string> {
+        const {email, password} = login;
         return this.validateUser(email, password).pipe(
             switchMap((user: User) => {
                 if (user) {
